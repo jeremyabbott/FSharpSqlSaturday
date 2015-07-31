@@ -4,22 +4,25 @@ open System.Collections.Generic
 open System.Net.Http
 open System.Web.Http
 open Microsoft.Owin.Hosting
+open DisappointinglyAttributed
 
-open Module1
-open Module4
-// This is a class
-type Startup() =
+let formatUrl = sprintf "%s/%s" //function that accepts two strings...
+
+[<``(╯°□°）╯︵┻━┻Attribute``>] // If you use the backtic you can use special characters...
+type Startup() = // Start of class declaration
     member this.Configuration(appBuilder : IAppBuilder) = // type annotation
         let config = new  HttpConfiguration()
         let route = config.Routes.MapHttpRoute("DefaultApi","api/{controller}/{id}")
         route.Defaults.Add("id", RouteParameter.Optional)
         appBuilder.UseWebApi(config) |> ignore // what are we ignoring?
 
+[<``┬──┬ノ(゜-゜ノ)Attribute``>]
 type ValuesController() =
     inherit ApiController()
     member this.Get() = // this is an action
         [|"value1"; "value2"|] // string[]
 
+[<``¯|_(ツ)_|¯``>]
 [<EntryPoint>] // this is an attribute
 let main argv = 
     let baseAddress = "http://localhost:9000"
@@ -28,12 +31,8 @@ let main argv =
     use server = WebApp.Start<Startup>(baseAddress)
     let client = new HttpClient() // only need to use the new keyword with IDisposable types
     let response = // mixing a tupled method call with an F# function call
-        client.GetAsync(sprintf "%s/%s" baseAddress "api/values").Result
+        client.GetAsync(formatUrl baseAddress "api/values").Result
     printfn "%A" response // response is some object so %A just formats any object
     // we're getting a string back so the format argument is %s
     printfn "%s" (response.Content.ReadAsStringAsync().Result)
-    
-    // Module1.runModule1Example client baseAddress
-    // Module4.demoShape () |> ignore
-    
     0 // return an integer exit code
